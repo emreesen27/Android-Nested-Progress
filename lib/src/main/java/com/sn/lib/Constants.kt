@@ -6,6 +6,7 @@ object Constants {
     val COLOR_BLUE = Color.parseColor("#2666CF")
     val COLOR_LIGHT_BLUE = Color.parseColor("#D3DEDC")
 
+    const val SIZE_FACTOR = 1.0F
     const val CIRCLE_RADIUS = 360
     const val INNER_LOADER_POS = 80
     const val OUTER_LOADER_POS = 60

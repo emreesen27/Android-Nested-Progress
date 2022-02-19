@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
+import androidx.annotation.ColorInt
 import com.sn.lib.Constants.ANIM_DURATION
 import com.sn.lib.Constants.CIRCLE_RADIUS
 import com.sn.lib.Constants.COLOR_BLUE
@@ -21,41 +22,87 @@ import com.sn.lib.Constants.OUTER_ANIM_INTERPOLATOR
 import com.sn.lib.Constants.OUTER_LOADER_POS
 import com.sn.lib.Constants.OUTER_LOADER_LENGTH
 import com.sn.lib.Constants.OUTER_STROKE_WIDTH
+import com.sn.lib.Constants.SIZE_FACTOR
+import java.lang.IllegalArgumentException
 import kotlin.math.min
+import kotlin.math.roundToInt
+
+/**
+ * @author Aydin Emre E.
+ * @version 1.0.1
+ * @since 19-02-2022
+ */
 
 class NestedProgress @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
 
-    private var innerLoaderAnimDuration: Int = ANIM_DURATION
-    private var outerLoaderAnimDuration: Int = ANIM_DURATION
-
+    // Animation value of progressions. These values are assigned to the "sweep angle" value in drawArc
     private var innerLoaderAnimValue: Int = 0
     private var outerLoaderAnimValue: Int = 0
 
-    private var innerAnimInterpolator = INNER_ANIM_INTERPOLATOR
-    private var outerAnimInterpolator = OUTER_ANIM_INTERPOLATOR
-
+    // Animation always starts at 1 and goes full round until 360
     private val innerLoaderAnimator = ValueAnimator.ofInt(1, CIRCLE_RADIUS)
     private val outerLoaderAnimator = ValueAnimator.ofInt(1, CIRCLE_RADIUS)
 
-    private var innerLoaderLength: Float = INNER_LOADER_LENGTH
-    private var outerLoaderLength: Float = OUTER_LOADER_LENGTH
-
-    private var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH
-    private var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH
-
-    private var innerLoaderColor: Int = COLOR_BLUE
-    private var outerLoaderColor: Int = COLOR_LIGHT_BLUE
+    private val innerLoadingRect: RectF = RectF()
+    private val outerLoadingRect: RectF = RectF()
 
     private val paint = Paint().apply {
         this.style = Paint.Style.STROKE
         this.isAntiAlias = true
     }
 
-    private val innerLoadingRect: RectF = RectF()
-    private val outerLoadingRect: RectF = RectF()
+
+    @Suppress("UNUSED_VARIABLE")
+    private var innerLoaderAnimDuration: Int = ANIM_DURATION
+
+    @Suppress("UNUSED_VARIABLE")
+    private var outerLoaderAnimDuration: Int = ANIM_DURATION
+
+    @Suppress("UNUSED_VARIABLE")
+    var innerAnimInterpolator = INNER_ANIM_INTERPOLATOR
+
+    @Suppress("UNUSED_VARIABLE")
+    var outerAnimInterpolator = OUTER_ANIM_INTERPOLATOR
+
+    /** There is no limit value for stroke width, but correct values should be used for a smooth display * */
+    @Suppress("UNUSED_VARIABLE")
+    var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH
+
+    @Suppress("UNUSED_VARIABLE")
+    var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH
+
+    @ColorInt
+    @Suppress("UNUSED_VARIABLE")
+    var innerLoaderColor: Int = COLOR_BLUE
+
+    @ColorInt
+    @Suppress("UNUSED_VARIABLE")
+    var outerLoaderColor: Int = COLOR_LIGHT_BLUE
+
+    /** The maximum angle at which you can see a movement in the animation is 359
+     * -innerLoaderLength
+     * -outerLoaderLength
+     * **/
+
+    @Suppress("UNUSED_VARIABLE")
+    var innerLoaderLength: Float = INNER_LOADER_LENGTH
+
+    @Suppress("UNUSED_VARIABLE")
+    var outerLoaderLength: Float = OUTER_LOADER_LENGTH
+
+    /** The library ignores the dp value so you should keep the sizeFactor value range 1 and 3.
+     *  In case you exceed value you will get IllegalArgumentException
+     * @throws IllegalArgumentException
+     * */
+    @Suppress("UNUSED_VARIABLE")
+    var sizeFactor: Float = SIZE_FACTOR
+        set(value) {
+            field =
+                if (value > 3.0f && value < 1.0f) throw IllegalArgumentException("sizeFactor Must be range 1.0 and 3.0") else value
+        }
 
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.NestedProgress)
@@ -112,6 +159,7 @@ class NestedProgress @JvmOverloads constructor(
                 this.outerAnimInterpolator
             )
 
+        sizeFactor = attributes.getFloat(R.styleable.NestedProgress_sizeFactor, this.sizeFactor)
 
         attributes.recycle()
 
@@ -127,16 +175,17 @@ class NestedProgress @JvmOverloads constructor(
         val centerH: Float = height / 2f
 
         innerLoadingRect.set(
-            centerW - INNER_LOADER_POS,
-            centerH - INNER_LOADER_POS,
-            centerW + INNER_LOADER_POS,
-            centerH + INNER_LOADER_POS
+            centerW - (INNER_LOADER_POS * sizeFactor),
+            centerH - (INNER_LOADER_POS * sizeFactor),
+            centerW + (INNER_LOADER_POS * sizeFactor),
+            centerH + (INNER_LOADER_POS * sizeFactor)
         )
+
         outerLoadingRect.set(
-            centerW - OUTER_LOADER_POS,
-            centerH - OUTER_LOADER_POS,
-            centerW + OUTER_LOADER_POS,
-            centerH + OUTER_LOADER_POS
+            centerW - (OUTER_LOADER_POS * sizeFactor),
+            centerH - (OUTER_LOADER_POS * sizeFactor),
+            centerW + (OUTER_LOADER_POS * sizeFactor),
+            centerH + (OUTER_LOADER_POS * sizeFactor)
         )
 
         updatePaint(outerLoaderColor, outerLoaderStrokeWidth)
@@ -161,8 +210,8 @@ class NestedProgress @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val desiredWidth = 300
-        val desiredHeight = 300
+        val desiredWidth = (300 * sizeFactor).roundToInt()
+        val desiredHeight = (300 * sizeFactor).roundToInt()
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
