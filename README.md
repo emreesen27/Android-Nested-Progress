@@ -32,5 +32,23 @@ dependencies {
       app:innerAnimInterpolator="linear"
       app:outerAnimInterpolator="overshoot"
       app:outerLoaderAnimDuration="1500" /> 
-
 ```
+
+### Properties
+
+| Property Name | Type          | Default
+| ------------- | ------------- | ------------- 
+| innerLoaderStrokeWidth | Float  | 12.0F
+| outerLoaderStrokeWidth   | Float | 14.0F
+| innerLoaderLength| Float| 260.0F
+| outerLoaderLength| Float| 320.0F
+| innerAnimInterpolator| Interpolator| overshoot
+| outerAnimInterpolator| Interpolator| lineer
+| innerLoaderAnimDuration| Integer| 1000
+| outerLoaderAnimDuration| Integer| 1000
+| innerLoaderColor| Color| D3DEDC
+| outerLoaderColor| Color| 2666CF
+| sizeFactor| Float| 1.0F
+
+
+
