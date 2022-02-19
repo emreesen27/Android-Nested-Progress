@@ -75,11 +75,11 @@ class NestedProgress @JvmOverloads constructor(
 
     @ColorInt
     @Suppress("UNUSED_VARIABLE")
-    var innerLoaderColor: Int = COLOR_BLUE
+    var innerLoaderColor: Int = COLOR_LIGHT_BLUE
 
     @ColorInt
     @Suppress("UNUSED_VARIABLE")
-    var outerLoaderColor: Int = COLOR_LIGHT_BLUE
+    var outerLoaderColor: Int = COLOR_BLUE
 
     /** The maximum angle at which you can see a movement in the animation is 359
      * -innerLoaderLength
@@ -173,14 +173,14 @@ class NestedProgress @JvmOverloads constructor(
         val centerW: Float = width / 2f
         val centerH: Float = height / 2f
 
-        innerLoadingRect.set(
+        outerLoadingRect.set(
             centerW - (INNER_LOADER_POS * sizeFactor),
             centerH - (INNER_LOADER_POS * sizeFactor),
             centerW + (INNER_LOADER_POS * sizeFactor),
             centerH + (INNER_LOADER_POS * sizeFactor)
         )
 
-        outerLoadingRect.set(
+        innerLoadingRect.set(
             centerW - (OUTER_LOADER_POS * sizeFactor),
             centerH - (OUTER_LOADER_POS * sizeFactor),
             centerW + (OUTER_LOADER_POS * sizeFactor),
@@ -191,7 +191,7 @@ class NestedProgress @JvmOverloads constructor(
         canvas.drawArc(
             outerLoadingRect,
             outerLoaderAnimValue.toFloat(),
-            innerLoaderLength,
+            outerLoaderLength,
             false,
             paint
         )
@@ -200,7 +200,7 @@ class NestedProgress @JvmOverloads constructor(
         canvas.drawArc(
             innerLoadingRect,
             innerLoaderAnimValue.toFloat(),
-            outerLoaderLength,
+            innerLoaderLength,
             false,
             paint
         )
@@ -209,8 +209,8 @@ class NestedProgress @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val desiredWidth = (300 * sizeFactor).roundToInt()
-        val desiredHeight = (300 * sizeFactor).roundToInt()
+        val desiredWidth = (250 * sizeFactor).roundToInt()
+        val desiredHeight = (250 * sizeFactor).roundToInt()
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)

@@ -5,7 +5,7 @@
         <attr name="outerLoaderAnimDuration" format="integer" />
         <attr name="outerLoaderLength" format="integer" />
         <attr name="innerLoaderLength" format="float" />
-        <attr name="outerLoaderColor" format="float" />
+        <attr name="outerLoaderColor" format="color" />
         <attr name="innerLoaderColor" format="color" />
         <attr name="innerLoaderStrokeWidth" format="float" />
         <attr name="outerLoaderStrokeWidth" format="float" />
