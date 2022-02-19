@@ -7,8 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
-import android.view.animation.OvershootInterpolator
+import android.view.animation.*
 import androidx.annotation.ColorInt
 import com.sn.lib.Constants.ANIM_DURATION
 import com.sn.lib.Constants.CIRCLE_RADIUS
@@ -270,8 +269,21 @@ class NestedProgress @JvmOverloads constructor(
         paint.strokeWidth = strokeWidth
     }
 
+    private fun getAnimation(interpolator: Int): Interpolator {
+        return when (interpolator) {
+            0 -> AccelerateInterpolator()
+            1 -> DecelerateInterpolator()
+            2 -> AccelerateDecelerateInterpolator()
+            3 -> AnticipateInterpolator()
+            4 -> AnticipateOvershootInterpolator()
+            5 -> LinearInterpolator()
+            6 -> OvershootInterpolator()
+            else -> AccelerateDecelerateInterpolator()
+        }
+    }
+
     private fun innerLoaderAnimation() {
-        innerLoaderAnimator.interpolator = OvershootInterpolator()
+        innerLoaderAnimator.interpolator = getAnimation(innerAnimInterpolator)
         innerLoaderAnimator.duration = innerLoaderAnimDuration.toLong()
         innerLoaderAnimator.repeatCount = ValueAnimator.INFINITE
         innerLoaderAnimator.addUpdateListener { animation ->
@@ -281,7 +293,7 @@ class NestedProgress @JvmOverloads constructor(
     }
 
     private fun outerLoaderAnimation() {
-        outerLoaderAnimator.interpolator = LinearInterpolator()
+        outerLoaderAnimator.interpolator = getAnimation(outerAnimInterpolator)
         outerLoaderAnimator.duration = outerLoaderAnimDuration.toLong()
         outerLoaderAnimator.repeatCount = ValueAnimator.INFINITE
         outerLoaderAnimator.addUpdateListener { animation ->

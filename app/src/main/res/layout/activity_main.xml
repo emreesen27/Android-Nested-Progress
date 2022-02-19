@@ -10,10 +10,10 @@
         android:id="@+id/emre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:innerAnimInterpolator="accelerateDecelerate"
+        app:innerAnimInterpolator="overshoot"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:outerAnimInterpolator="linear" />
+        app:outerAnimInterpolator="overshoot" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
