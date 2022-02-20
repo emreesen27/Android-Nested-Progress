@@ -8,8 +8,8 @@ object Constants {
 
     const val SIZE_FACTOR = 1.0F
     const val CIRCLE_RADIUS = 360
-    const val INNER_LOADER_POS = 80
-    const val OUTER_LOADER_POS = 60
+    const val INNER_LOADER_POS = 60
+    const val OUTER_LOADER_POS = 80
     const val ANIM_DURATION = 1000
     const val INNER_ANIM_INTERPOLATOR = 6
     const val OUTER_ANIM_INTERPOLATOR = 5

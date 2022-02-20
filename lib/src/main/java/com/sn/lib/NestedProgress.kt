@@ -174,17 +174,17 @@ class NestedProgress @JvmOverloads constructor(
         val centerH: Float = height / 2f
 
         outerLoadingRect.set(
-            centerW - (INNER_LOADER_POS * sizeFactor),
-            centerH - (INNER_LOADER_POS * sizeFactor),
-            centerW + (INNER_LOADER_POS * sizeFactor),
-            centerH + (INNER_LOADER_POS * sizeFactor)
-        )
-
-        innerLoadingRect.set(
             centerW - (OUTER_LOADER_POS * sizeFactor),
             centerH - (OUTER_LOADER_POS * sizeFactor),
             centerW + (OUTER_LOADER_POS * sizeFactor),
             centerH + (OUTER_LOADER_POS * sizeFactor)
+        )
+
+        innerLoadingRect.set(
+            centerW - (INNER_LOADER_POS * sizeFactor),
+            centerH - (INNER_LOADER_POS * sizeFactor),
+            centerW + (INNER_LOADER_POS * sizeFactor),
+            centerH + (INNER_LOADER_POS * sizeFactor)
         )
 
         updatePaint(outerLoaderColor, outerLoaderStrokeWidth)
