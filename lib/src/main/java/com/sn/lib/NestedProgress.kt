@@ -32,6 +32,7 @@ import kotlin.math.roundToInt
  * @since 19-02-2022
  */
 
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 class NestedProgress @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
@@ -54,31 +55,20 @@ class NestedProgress @JvmOverloads constructor(
     }
 
 
-    @Suppress("UNUSED_VARIABLE")
-    private var innerLoaderAnimDuration: Int = ANIM_DURATION
+    var innerLoaderAnimDuration: Int = ANIM_DURATION
+    var outerLoaderAnimDuration: Int = ANIM_DURATION
 
-    @Suppress("UNUSED_VARIABLE")
-    private var outerLoaderAnimDuration: Int = ANIM_DURATION
-
-    @Suppress("UNUSED_VARIABLE")
     var innerAnimInterpolator = INNER_ANIM_INTERPOLATOR
-
-    @Suppress("UNUSED_VARIABLE")
     var outerAnimInterpolator = OUTER_ANIM_INTERPOLATOR
 
     /** There is no limit value for stroke width, but correct values should be used for a smooth display * */
-    @Suppress("UNUSED_VARIABLE")
     var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH
-
-    @Suppress("UNUSED_VARIABLE")
     var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH
 
     @ColorInt
-    @Suppress("UNUSED_VARIABLE")
     var innerLoaderColor: Int = COLOR_LIGHT_BLUE
 
     @ColorInt
-    @Suppress("UNUSED_VARIABLE")
     var outerLoaderColor: Int = COLOR_BLUE
 
     /** The maximum angle at which you can see a movement in the animation is 359
@@ -86,17 +76,13 @@ class NestedProgress @JvmOverloads constructor(
      * -outerLoaderLength
      * **/
 
-    @Suppress("UNUSED_VARIABLE")
     var innerLoaderLength: Float = INNER_LOADER_LENGTH
-
-    @Suppress("UNUSED_VARIABLE")
     var outerLoaderLength: Float = OUTER_LOADER_LENGTH
 
     /** The library ignores the dp value so you should keep the sizeFactor value range 1 and 3.
      *  In case you exceed value you will get IllegalArgumentException
      * @throws IllegalArgumentException
      * */
-    @Suppress("UNUSED_VARIABLE")
     var sizeFactor: Float = SIZE_FACTOR
         set(value) {
             field =
