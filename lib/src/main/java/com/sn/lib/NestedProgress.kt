@@ -9,26 +9,33 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.*
 import androidx.annotation.ColorInt
+import androidx.annotation.Dimension
 import com.sn.lib.Constants.ANIM_DURATION
 import com.sn.lib.Constants.CIRCLE_RADIUS
 import com.sn.lib.Constants.COLOR_BLUE
 import com.sn.lib.Constants.COLOR_LIGHT_BLUE
+import com.sn.lib.Constants.DESIRED_WH
 import com.sn.lib.Constants.INNER_ANIM_INTERPOLATOR
-import com.sn.lib.Constants.INNER_LOADER_POS
 import com.sn.lib.Constants.INNER_LOADER_LENGTH
 import com.sn.lib.Constants.INNER_STROKE_WIDTH
+import com.sn.lib.Constants.MAX_B_CIRCLES
+import com.sn.lib.Constants.MAX_STROKE
+import com.sn.lib.Constants.MAX_TOTAL_STROKE
+import com.sn.lib.Constants.MID_POINT
+import com.sn.lib.Constants.MIN_B_CIRCLES
+import com.sn.lib.Constants.MIN_STOKE
 import com.sn.lib.Constants.OUTER_ANIM_INTERPOLATOR
-import com.sn.lib.Constants.OUTER_LOADER_POS
 import com.sn.lib.Constants.OUTER_LOADER_LENGTH
 import com.sn.lib.Constants.OUTER_STROKE_WIDTH
-import com.sn.lib.Constants.SIZE_FACTOR
-import java.lang.IllegalArgumentException
+import com.sn.lib.Constants.SPACE_BETWEEN_CIRCLES
+import com.sn.lib.Constants.START_POINT
+import com.sn.lib.ext.dp
 import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
  * @author Aydin Emre E.
- * @version 1.0.1
+ * @version 1.0.2
  * @since 19-02-2022
  */
 
@@ -37,6 +44,10 @@ class NestedProgress @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    /**
+     * Default values are defined here. If a new one is not assigned, these values are used.
+     * @see [Constants]
+     */
 
     // Animation value of progressions. These values are assigned to the "sweep angle" value in drawArc
     private var innerLoaderAnimValue: Int = 0
@@ -54,16 +65,13 @@ class NestedProgress @JvmOverloads constructor(
         this.isAntiAlias = true
     }
 
-
+    // Animation times for both progresses
     var innerLoaderAnimDuration: Int = ANIM_DURATION
     var outerLoaderAnimDuration: Int = ANIM_DURATION
 
+    // Animation types for both progresses
     var innerAnimInterpolator = INNER_ANIM_INTERPOLATOR
     var outerAnimInterpolator = OUTER_ANIM_INTERPOLATOR
-
-    /** There is no limit value for stroke width, but correct values should be used for a smooth display * */
-    var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH
-    var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH
 
     @ColorInt
     var innerLoaderColor: Int = COLOR_LIGHT_BLUE
@@ -71,24 +79,60 @@ class NestedProgress @JvmOverloads constructor(
     @ColorInt
     var outerLoaderColor: Int = COLOR_BLUE
 
-    /** The maximum angle at which you can see a movement in the animation is 359
-     * -innerLoaderLength
-     * -outerLoaderLength
-     * **/
-
+    /** You must value between the drawing angles of the circle (1-359), with value of 0 and 360, the animation is not visible.
+     * - innerLoaderLength
+     * - outerLoaderLength
+     */
     var innerLoaderLength: Float = INNER_LOADER_LENGTH
     var outerLoaderLength: Float = OUTER_LOADER_LENGTH
 
-    /** The library ignores the dp value so you should keep the sizeFactor value range 1 and 3.
-     *  In case you exceed value you will get IllegalArgumentException
+    /** Strokes can be in the range 1 to 10, otherwise the illegal argument exception error is thrown.
      * @throws IllegalArgumentException
-     * */
-    var sizeFactor: Float = SIZE_FACTOR
+     * - innerLoaderStrokeWidth
+     * - outerLoaderStrokeWidth
+     * @see [dp] An extensions written for float. It is used to convert the default value to dp.
+     */
+    @Dimension
+    var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH.dp
         set(value) {
             field =
-                if (value > 3.0f && value < 1.0f) throw IllegalArgumentException("sizeFactor Must be range 1.0 and 3.0") else value
+                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.stroke_range_error
+                    )
+                ) else value
         }
 
+    @Dimension
+    var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH.dp
+        set(value) {
+            field =
+                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.stroke_range_error
+                    )
+                ) else value
+        }
+
+    /** Set the distance between the two loaders. The higher this value, the smaller the "internal loader".
+     *  Space between circles can be in the range 1 to 10, otherwise the illegal argument exception error is thrown.
+     * @throws IllegalArgumentException
+     * - spaceBetweenCircles
+     */
+    @Dimension
+    var spaceBetweenCircles = SPACE_BETWEEN_CIRCLES.dp
+        set(value) {
+            field =
+                if (value > MAX_B_CIRCLES.dp || value < MIN_B_CIRCLES.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.space_between_range_error
+                    )
+                ) else value
+        }
+
+    /**
+     * You can find the attributes from the attrs.xml file.
+     */
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.NestedProgress)
 
@@ -121,13 +165,13 @@ class NestedProgress @JvmOverloads constructor(
             )
 
         innerLoaderStrokeWidth =
-            attributes.getFloat(
+            attributes.getDimension(
                 R.styleable.NestedProgress_innerLoaderStrokeWidth,
                 this.innerLoaderStrokeWidth
             )
 
         outerLoaderStrokeWidth =
-            attributes.getFloat(
+            attributes.getDimension(
                 R.styleable.NestedProgress_outerLoaderStrokeWidth,
                 this.outerLoaderStrokeWidth
             )
@@ -144,7 +188,11 @@ class NestedProgress @JvmOverloads constructor(
                 this.outerAnimInterpolator
             )
 
-        sizeFactor = attributes.getFloat(R.styleable.NestedProgress_sizeFactor, this.sizeFactor)
+        spaceBetweenCircles =
+            attributes.getDimension(
+                R.styleable.NestedProgress_spaceBetweenCircles,
+                this.spaceBetweenCircles
+            )
 
         attributes.recycle()
 
@@ -152,27 +200,59 @@ class NestedProgress @JvmOverloads constructor(
         outerLoaderAnimation()
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        val desired = DESIRED_WH.dp.roundToInt()
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+        val width = when (widthMode) {
+            MeasureSpec.EXACTLY -> {
+                widthSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desired, widthSize)
+            }
+            else -> {
+                desired
+            }
+        }
 
-        val centerW: Float = width / 2f
-        val centerH: Float = height / 2f
+        val height = when (heightMode) {
+            MeasureSpec.EXACTLY -> {
+                heightSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desired, heightSize)
+            }
+            else -> {
+                desired
+            }
+        }
+
+        setMeasuredDimension(width, height)
+
+        val highStroke = outerLoaderStrokeWidth + innerLoaderStrokeWidth
+        val expansion = MAX_TOTAL_STROKE.dp - highStroke
 
         outerLoadingRect.set(
-            centerW - (OUTER_LOADER_POS * sizeFactor),
-            centerH - (OUTER_LOADER_POS * sizeFactor),
-            centerW + (OUTER_LOADER_POS * sizeFactor),
-            centerH + (OUTER_LOADER_POS * sizeFactor)
+            START_POINT + expansion + (highStroke / MID_POINT),
+            START_POINT + expansion + (highStroke / MID_POINT),
+            width - (expansion + (highStroke / MID_POINT)),
+            width - (expansion + (highStroke / MID_POINT))
         )
 
         innerLoadingRect.set(
-            centerW - (INNER_LOADER_POS * sizeFactor),
-            centerH - (INNER_LOADER_POS * sizeFactor),
-            centerW + (INNER_LOADER_POS * sizeFactor),
-            centerH + (INNER_LOADER_POS * sizeFactor)
+            START_POINT + (expansion + highStroke + spaceBetweenCircles),
+            START_POINT + (expansion + highStroke + spaceBetweenCircles),
+            width - (expansion + highStroke + spaceBetweenCircles),
+            width - (expansion + highStroke + spaceBetweenCircles)
         )
+    }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
         updatePaint(outerLoaderColor, outerLoaderStrokeWidth)
         canvas.drawArc(
             outerLoadingRect,
@@ -193,48 +273,13 @@ class NestedProgress @JvmOverloads constructor(
 
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val desiredWidth = (250 * sizeFactor).roundToInt()
-        val desiredHeight = (250 * sizeFactor).roundToInt()
-
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-
-        val width = when (widthMode) {
-            MeasureSpec.EXACTLY -> {
-                widthSize
-            }
-            MeasureSpec.AT_MOST -> {
-                min(desiredWidth, widthSize)
-            }
-            else -> {
-                desiredWidth
-            }
-        }
-
-        val height = when (heightMode) {
-            MeasureSpec.EXACTLY -> {
-                heightSize
-            }
-            MeasureSpec.AT_MOST -> {
-                min(desiredHeight, heightSize)
-            }
-            else -> {
-                desiredHeight
-            }
-        }
-
-        setMeasuredDimension(width, height)
-    }
-
+    // Starts the animation when the screen is attached
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         startAnimation()
     }
 
+    // Stops the animation when the screen is detached
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         stopAnimation()
@@ -250,11 +295,21 @@ class NestedProgress @JvmOverloads constructor(
         outerLoaderAnimator.end()
     }
 
+    /**
+     * Both progresses use the same paint object, which is updated with this function before being drawn.
+     * @param color [Int]
+     * @param strokeWidth [Float]
+     */
     private fun updatePaint(color: Int, strokeWidth: Float) {
         paint.color = color
         paint.strokeWidth = strokeWidth
     }
 
+    /**
+     * Returns an interpolator back based on the integer value
+     * sorting is the same as enum in attrs.xml.
+     * @param interpolator [Int]
+     */
     private fun getAnimation(interpolator: Int): Interpolator {
         return when (interpolator) {
             0 -> AccelerateInterpolator()
@@ -268,6 +323,11 @@ class NestedProgress @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Animation continues until progress is removed. Inherits its properties from defined variables.
+     * - innerLoaderAnimation
+     * - outerLoaderAnimation
+     */
     private fun innerLoaderAnimation() {
         innerLoaderAnimator.interpolator = getAnimation(innerAnimInterpolator)
         innerLoaderAnimator.duration = innerLoaderAnimDuration.toLong()
@@ -287,6 +347,5 @@ class NestedProgress @JvmOverloads constructor(
             invalidate()
         }
     }
-
 
 }

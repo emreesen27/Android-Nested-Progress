@@ -23,16 +23,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:innerAnimInterpolator="linear"
-        app:innerLoaderAnimDuration="500"
+        app:innerLoaderAnimDuration="1500"
         app:innerLoaderColor="@color/purple_700"
         app:innerLoaderLength="180"
         app:layout_constraintStart_toEndOf="@+id/pb1"
         app:layout_constraintTop_toTopOf="@id/pb1"
-        app:outerAnimInterpolator="linear"
         app:outerLoaderAnimDuration="2000"
         app:outerLoaderColor="@color/blue"
-        app:outerLoaderLength="300"
-        app:outerLoaderStrokeWidth="20" />
+        app:outerLoaderLength="360"
+        app:outerLoaderStrokeWidth="5dp" />
 
     <com.sn.lib.NestedProgress
         android:id="@+id/pb3"
@@ -41,14 +40,15 @@
         app:innerAnimInterpolator="overshoot"
         app:innerLoaderAnimDuration="2000"
         app:innerLoaderColor="@color/red"
-        app:innerLoaderLength="320"
+        app:innerLoaderLength="360"
+        app:innerLoaderStrokeWidth="1.5dp"
         app:layout_constraintStart_toEndOf="@+id/pb2"
         app:layout_constraintTop_toTopOf="@id/pb2"
         app:outerAnimInterpolator="anticipateOvershoot"
         app:outerLoaderAnimDuration="1000"
         app:outerLoaderColor="@color/red_soft"
         app:outerLoaderLength="200"
-        app:outerLoaderStrokeWidth="25" />
+        app:outerLoaderStrokeWidth="10dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
