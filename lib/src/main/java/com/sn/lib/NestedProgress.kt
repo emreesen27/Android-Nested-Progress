@@ -86,7 +86,7 @@ class NestedProgress @JvmOverloads constructor(
     var innerLoaderLength: Float = INNER_LOADER_LENGTH
     var outerLoaderLength: Float = OUTER_LOADER_LENGTH
 
-    /** Stroke can be in the range 0 to 10, otherwise the illegal argument exception error is thrown.
+    /** Strokes can be in the range 1 to 10, otherwise the illegal argument exception error is thrown.
      * @throws IllegalArgumentException
      * - innerLoaderStrokeWidth
      * - outerLoaderStrokeWidth
@@ -114,6 +114,11 @@ class NestedProgress @JvmOverloads constructor(
                 ) else value
         }
 
+    /** Set the distance between the two loaders. The higher this value, the smaller the "internal loader".
+     *  Space between circles can be in the range 1 to 10, otherwise the illegal argument exception error is thrown.
+     * @throws IllegalArgumentException
+     * - spaceBetweenCircles
+     */
     @Dimension
     var spaceBetweenCircles = SPACE_BETWEEN_CIRCLES.dp
         set(value) {

@@ -10,14 +10,45 @@
         android:id="@+id/pb1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="60dp"
         app:innerAnimInterpolator="linear"
-        app:innerLoaderStrokeWidth="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:outerAnimInterpolator="linear"
-        app:outerLoaderAnimDuration="1500"
-        app:outerLoaderStrokeWidth="1dp"
-        app:spaceBetweenCircles="1dp"/>
+        app:outerLoaderAnimDuration="1500" />
+
+    <com.sn.lib.NestedProgress
+        android:id="@+id/pb2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:innerAnimInterpolator="linear"
+        app:innerLoaderAnimDuration="1500"
+        app:innerLoaderColor="@color/purple_700"
+        app:innerLoaderLength="180"
+        app:layout_constraintStart_toEndOf="@+id/pb1"
+        app:layout_constraintTop_toTopOf="@id/pb1"
+        app:outerLoaderAnimDuration="2000"
+        app:outerLoaderColor="@color/blue"
+        app:outerLoaderLength="360"
+        app:outerLoaderStrokeWidth="5dp" />
+
+    <com.sn.lib.NestedProgress
+        android:id="@+id/pb3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:innerAnimInterpolator="overshoot"
+        app:innerLoaderAnimDuration="2000"
+        app:innerLoaderColor="@color/red"
+        app:innerLoaderLength="360"
+        app:innerLoaderStrokeWidth="1.5dp"
+        app:layout_constraintStart_toEndOf="@+id/pb2"
+        app:layout_constraintTop_toTopOf="@id/pb2"
+        app:outerAnimInterpolator="anticipateOvershoot"
+        app:outerLoaderAnimDuration="1000"
+        app:outerLoaderColor="@color/red_soft"
+        app:outerLoaderLength="200"
+        app:outerLoaderStrokeWidth="10dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
