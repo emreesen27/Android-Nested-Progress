@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="stroke_range_error">Stroke can take values range 1 and 10</string>
+    <string name="space_between_range_error">Space between circles can take values range 1 and 10</string>
 </resources>

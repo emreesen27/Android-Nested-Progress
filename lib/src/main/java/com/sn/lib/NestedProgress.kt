@@ -18,9 +18,11 @@ import com.sn.lib.Constants.DESIRED_WH
 import com.sn.lib.Constants.INNER_ANIM_INTERPOLATOR
 import com.sn.lib.Constants.INNER_LOADER_LENGTH
 import com.sn.lib.Constants.INNER_STROKE_WIDTH
+import com.sn.lib.Constants.MAX_B_CIRCLES
 import com.sn.lib.Constants.MAX_STROKE
 import com.sn.lib.Constants.MAX_TOTAL_STROKE
 import com.sn.lib.Constants.MID_POINT
+import com.sn.lib.Constants.MIN_B_CIRCLES
 import com.sn.lib.Constants.MIN_STOKE
 import com.sn.lib.Constants.OUTER_ANIM_INTERPOLATOR
 import com.sn.lib.Constants.OUTER_LOADER_LENGTH
@@ -116,9 +118,9 @@ class NestedProgress @JvmOverloads constructor(
     var spaceBetweenCircles = SPACE_BETWEEN_CIRCLES.dp
         set(value) {
             field =
-                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                if (value > MAX_B_CIRCLES.dp || value < MIN_B_CIRCLES.dp) throw IllegalArgumentException(
                     resources.getString(
-                        R.string.stroke_range_error
+                        R.string.space_between_range_error
                     )
                 ) else value
         }

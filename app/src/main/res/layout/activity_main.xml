@@ -16,7 +16,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:outerAnimInterpolator="linear"
         app:outerLoaderAnimDuration="1500"
-        app:outerLoaderStrokeWidth="5dp" />
+        app:outerLoaderStrokeWidth="1dp"
+        app:spaceBetweenCircles="1dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

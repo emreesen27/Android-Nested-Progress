@@ -20,5 +20,7 @@ object Constants {
     const val MAX_TOTAL_STROKE = 21F
     const val MIN_STOKE = 0F
     const val MAX_STROKE = 10F
+    const val MIN_B_CIRCLES = 0F
+    const val MAX_B_CIRCLES = 10F
     const val SPACE_BETWEEN_CIRCLES = 3F
 }
