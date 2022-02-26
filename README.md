@@ -15,7 +15,7 @@ allprojects {
 #### Add this to your module's build.gradle file
 ```gradle
 dependencies {
-  implementation 'com.github.emreesen27:Android-Nested-Progress:v1.0.1'
+  implementation 'com.github.emreesen27:Android-Nested-Progress:v1.0.2'
 }
 ```
 
