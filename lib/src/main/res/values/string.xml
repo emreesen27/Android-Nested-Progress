@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stroke_range_error">Stroke can take values range 1 and 10</string>
+</resources>

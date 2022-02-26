@@ -14,15 +14,22 @@ import com.sn.lib.Constants.ANIM_DURATION
 import com.sn.lib.Constants.CIRCLE_RADIUS
 import com.sn.lib.Constants.COLOR_BLUE
 import com.sn.lib.Constants.COLOR_LIGHT_BLUE
+import com.sn.lib.Constants.DESIRED_WH
 import com.sn.lib.Constants.INNER_ANIM_INTERPOLATOR
 import com.sn.lib.Constants.INNER_LOADER_LENGTH
 import com.sn.lib.Constants.INNER_STROKE_WIDTH
+import com.sn.lib.Constants.MAX_STROKE
+import com.sn.lib.Constants.MAX_TOTAL_STROKE
 import com.sn.lib.Constants.MID_POINT
+import com.sn.lib.Constants.MIN_STOKE
 import com.sn.lib.Constants.OUTER_ANIM_INTERPOLATOR
 import com.sn.lib.Constants.OUTER_LOADER_LENGTH
 import com.sn.lib.Constants.OUTER_STROKE_WIDTH
-import com.sn.lib.Constants.POSITION_COEFFICIENT
+import com.sn.lib.Constants.SPACE_BETWEEN_CIRCLES
+import com.sn.lib.Constants.START_POINT
 import com.sn.lib.ext.dp
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
  * @author Aydin Emre E.
@@ -64,17 +71,6 @@ class NestedProgress @JvmOverloads constructor(
     var innerAnimInterpolator = INNER_ANIM_INTERPOLATOR
     var outerAnimInterpolator = OUTER_ANIM_INTERPOLATOR
 
-    /** There is no limit value for stroke width, but correct values should be used for a smooth display
-     * - innerLoaderStrokeWidth
-     * - outerLoaderStrokeWidth
-     * @see [dp] An extensions written for float. It is used to convert the default value to dp.
-     */
-    @Dimension
-    var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH.dp
-
-    @Dimension
-    var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH.dp
-
     @ColorInt
     var innerLoaderColor: Int = COLOR_LIGHT_BLUE
 
@@ -85,9 +81,47 @@ class NestedProgress @JvmOverloads constructor(
      * - innerLoaderLength
      * - outerLoaderLength
      */
-
     var innerLoaderLength: Float = INNER_LOADER_LENGTH
     var outerLoaderLength: Float = OUTER_LOADER_LENGTH
+
+    /** Stroke can be in the range 0 to 10, otherwise the illegal argument exception error is thrown.
+     * @throws IllegalArgumentException
+     * - innerLoaderStrokeWidth
+     * - outerLoaderStrokeWidth
+     * @see [dp] An extensions written for float. It is used to convert the default value to dp.
+     */
+    @Dimension
+    var innerLoaderStrokeWidth: Float = INNER_STROKE_WIDTH.dp
+        set(value) {
+            field =
+                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.stroke_range_error
+                    )
+                ) else value
+        }
+
+    @Dimension
+    var outerLoaderStrokeWidth: Float = OUTER_STROKE_WIDTH.dp
+        set(value) {
+            field =
+                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.stroke_range_error
+                    )
+                ) else value
+        }
+
+    @Dimension
+    var spaceBetweenCircles = SPACE_BETWEEN_CIRCLES.dp
+        set(value) {
+            field =
+                if (value > MAX_STROKE.dp || value < MIN_STOKE.dp) throw IllegalArgumentException(
+                    resources.getString(
+                        R.string.stroke_range_error
+                    )
+                ) else value
+        }
 
     /**
      * You can find the attributes from the attrs.xml file.
@@ -147,35 +181,71 @@ class NestedProgress @JvmOverloads constructor(
                 this.outerAnimInterpolator
             )
 
+        spaceBetweenCircles =
+            attributes.getDimension(
+                R.styleable.NestedProgress_spaceBetweenCircles,
+                this.spaceBetweenCircles
+            )
+
         attributes.recycle()
 
         innerLoaderAnimation()
         outerLoaderAnimation()
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        val desired = DESIRED_WH.dp.roundToInt()
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
+        val width = when (widthMode) {
+            MeasureSpec.EXACTLY -> {
+                widthSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desired, widthSize)
+            }
+            else -> {
+                desired
+            }
+        }
 
-        val centerW: Float = width / MID_POINT
-        val centerH: Float = height / MID_POINT
-        val position: Float = width / POSITION_COEFFICIENT
-        val distanceCircles: Float = (innerLoaderStrokeWidth + outerLoaderStrokeWidth) / MID_POINT
+        val height = when (heightMode) {
+            MeasureSpec.EXACTLY -> {
+                heightSize
+            }
+            MeasureSpec.AT_MOST -> {
+                min(desired, heightSize)
+            }
+            else -> {
+                desired
+            }
+        }
+
+        setMeasuredDimension(width, height)
+
+        val highStroke = outerLoaderStrokeWidth + innerLoaderStrokeWidth
+        val expansion = MAX_TOTAL_STROKE.dp - highStroke
 
         outerLoadingRect.set(
-            centerW - (position / MID_POINT) + distanceCircles,
-            centerH - (position / MID_POINT) + distanceCircles,
-            centerW + (position / MID_POINT) + distanceCircles,
-            centerH + (position / MID_POINT) + distanceCircles,
+            START_POINT + expansion + (highStroke / MID_POINT),
+            START_POINT + expansion + (highStroke / MID_POINT),
+            width - (expansion + (highStroke / MID_POINT)),
+            width - (expansion + (highStroke / MID_POINT))
         )
 
         innerLoadingRect.set(
-            centerW - position / MID_POINT,
-            centerH - position / MID_POINT,
-            centerW + position / MID_POINT,
-            centerH + position / MID_POINT,
+            START_POINT + (expansion + highStroke + spaceBetweenCircles),
+            START_POINT + (expansion + highStroke + spaceBetweenCircles),
+            width - (expansion + highStroke + spaceBetweenCircles),
+            width - (expansion + highStroke + spaceBetweenCircles)
         )
+    }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
         updatePaint(outerLoaderColor, outerLoaderStrokeWidth)
         canvas.drawArc(
             outerLoadingRect,

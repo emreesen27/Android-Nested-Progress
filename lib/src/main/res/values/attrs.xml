@@ -9,7 +9,7 @@
         <attr name="innerLoaderColor" format="color" />
         <attr name="innerLoaderStrokeWidth" format="dimension" />
         <attr name="outerLoaderStrokeWidth" format="dimension" />
-        <attr name="sizeFactor" format="float" />
+        <attr name="spaceBetweenCircles" format="dimension" />
         <attr name="innerAnimInterpolator" format="enum">
             <enum name="accelerate" value="0" />
             <enum name="decelerate" value="1" />
