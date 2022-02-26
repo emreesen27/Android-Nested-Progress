@@ -7,8 +7,8 @@
         <attr name="innerLoaderLength" format="float" />
         <attr name="outerLoaderColor" format="color" />
         <attr name="innerLoaderColor" format="color" />
-        <attr name="innerLoaderStrokeWidth" format="float" />
-        <attr name="outerLoaderStrokeWidth" format="float" />
+        <attr name="innerLoaderStrokeWidth" format="dimension" />
+        <attr name="outerLoaderStrokeWidth" format="dimension" />
         <attr name="sizeFactor" format="float" />
         <attr name="innerAnimInterpolator" format="enum">
             <enum name="accelerate" value="0" />
