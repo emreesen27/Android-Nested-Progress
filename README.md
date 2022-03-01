@@ -20,6 +20,8 @@ dependencies {
 ```
 
 #### Different Combinations
+You can get many different loader by changing the properties.
+
 <img src="https://github.com/emreesen27/Android-Nested-Progress/blob/assets/example.gif?raw=true"/> 
 
 #### Usage
